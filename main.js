@@ -1,64 +1,58 @@
-const botoes = document.querySelectorAll(".botao");
-const textos = document.querySelectorAll(".aba-conteudo");
+const botaoMostraPalavras = document.querySelector('#botao-palavrachave');
+botaoMostraPalavras.addEventListener('click',mostraPalavrasChaves);
 
+function mostraPalavrasChaves(){
+   const texto = document.querySelector('#entrada-de-texto').value;
+   const campoResultado = document.querySelector('#resultado-palavrachave');
+   const palavraChave = processaTexto(texto);
+   
+   campoResultado.textContent = palavraChave.join(",");
 
-for(let i=0;i<botoes.length;i++){
-    botoes[i].onclik=function(){
-
-
-        for(let j=0;j<botoes.length;j++){
-            botoes[j].classList.remove("ativo");
-            textos[j].classList.remove("ativo");
-        }
-        botoes[i].classList.add("ativo");
-        textos[i].classList.add("ativo");
-    
-        }
-    }
-
-    const contadores = document.querySelectorAll(".contador");
-    const tempoObjetivo1 = new Date("2024-10-05T00:00:00");
-    const tempoObjetivo2 = new Date("2024-12-05T00:00:00");
-    const tempoObjetivo3 = new Date("2024-12-30T00:00:00");
-    const tempoObjetivo4 = new Date("2025-02-01T00:00:00");
-
-    const tempos = [tempoObjetivo1, tempoObjetivo2, tempoObjetivo3, tempoObjetivo4];
-
-  function cauculaTempo(tempoObjetivo) {
-        let tempoAtual = new Date();
-        let tempoFinal = tempoObjetivo - tempoAtual;
-        let segundos = Math.floor(tempoFinal/1000);
-        let minutos = Math.floor(segundos/60);
-        let horas = Math.floor(minutos/60);
-        letdias = Math.floor(horas/24);
-
-        segundos%=60;
-        minutos%=60;
-        horas%=24;
-        if(tempoFinal>0){
-            return[dias,horas,minutos.segundos];
-        } else {
-            return[0,0,0,0];
-        }
-    }
-
-
-
-function atualizarCronometro(){
-    for(let i=0;i<contadores.length;i++){
-        document.getElementById("dias"+i).textContent = calculaTempo(tempos[i])[0];
-        document.getElementById("horas"+i).textContent = calculaTempo(tempos[i])[1];
-        document.getElementById("min"+i).textContent = calculaTempo(tempos[i])[2];
-        document.getElementById("seg"+i).textContent = calculaTempo(tempos[i])[3];
-    }
 }
 
-function comecaConometro(){
-    atualizarCronometro();
-    setInterval(atualizarCronometro,1000);
+function processaTexto(texto){
+   let palavras = texto.split(/\P{L}+/u);
+
+  for(let i in palavras){
+   palavras[i] = palavras[i].toLowerCase();
+  }
+
+  palaras = tiraPalavrasRuins(palavras);
+
+  const frequencias = contaFrequencias(palavras);
+  let ordenadas = Object.keys(frequencias).sort(ordenaPalavras);
+
+  function ordenaPalavras(p1,p2){
+   return frequencias[p2]- frequencias[p1];
+
+  }
+
+  console.log(ordenadas);
+  return ordenadas.slice(0,10);
+
 }
-comecaConometro();
 
+function contaFrequencias(palavras){
+   let frequencias = {};
+   for (let i of palavras){
+      frequencias[i] = 0;
+      for (let j of palavras){
+         if (i==j){
+            frequencias[i]++;
 
+         }
+      }
+   }
+   return frequencias
+}
 
-
+function tiraPalavrasRuins(palaras){
+const PALAVRAS_RUINS = new Set(["para","uma","nós"])
+const palavrasBoas = [];
+for(let palavra of palavras ){
+   if(!PALAVRAS_RUINS.has(palavra)&& palavra.lenght > 2){
+      palavrasBoas.push(palavra);
+   }
+}
+return palavrasBoas;
+}
